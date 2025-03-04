@@ -1,30 +1,48 @@
-FROM oven/bun:latest as base
+# Use Bun base image
+FROM oven/bun:1.2-alpine AS builder
 
+# Set working directory
 WORKDIR /app
 
 # Copy package files
-COPY package.json bun.lock ./
+COPY package.json bun.lock tsconfig.json ./
+
+# Copy source code
+COPY . /app
 
 # Install dependencies
 RUN bun install
 
-# Copy source code
-COPY src/ ./src/
-COPY prisma/ ./prisma/
-COPY tsconfig.json ./
-
 # Generate Prisma client
-RUN bunx prisma generate
+RUN bun run prisma:generate
 
-# Build the application
-RUN bun build ./src/index.ts --outdir ./dist
+# Build the application (if needed)
+RUN bun build ./src/index.ts --target bun --outdir ./dist
+
+# Create production image
+FROM oven/bun:1.2-alpine
+
+WORKDIR /app
+
+# Copy built application and necessary files
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/shared/prisma ./prisma
+COPY --from=builder /app/packages/backend-service/package.json ./
+
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=3000
 
-# Expose the application port
-EXPOSE 3000
+# Create a non-root user
+# RUN addgroup --system --gid 1001 nodejs && \
+#     adduser --system --uid 1001 worker
 
-# Command to run the application
-CMD ["bun", "run", "src/index.ts", "--watch"]
+# # Set ownership
+# RUN chown -R worker:nodejs /app
+
+# # Switch to non-root user
+# USER worker
+
+# Command to run the worker
+CMD ["bun", "run", "./dist/index.js"]
