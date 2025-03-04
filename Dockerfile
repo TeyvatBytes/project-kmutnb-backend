@@ -14,7 +14,7 @@ COPY . /app
 RUN bun install
 
 # Generate Prisma client
-RUN bun run prisma:generate
+RUN bun run prisma generate
 
 # Build the application (if needed)
 RUN bun build ./src/index.ts --target bun --outdir ./dist
