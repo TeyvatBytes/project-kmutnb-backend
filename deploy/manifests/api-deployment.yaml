@@ -32,20 +32,6 @@ spec:
           env:
             - name: NODE_ENV
               value: "production"
-            - name: IPFS_CLUSTER_URL
-              value: http://ipfs-cluster-api.ipfs-system:9094
-            - name: IPFS_GATEWAY_URL
-              value: https://cdn.teyvatbytes.com
-            - name: RABBITMQ_URL
-              valueFrom:
-                secretKeyRef:
-                  name: cms-shop-credentials
-                  key: RABBITMQ_URL
-            - name: REDIS_URL
-              valueFrom:
-                secretKeyRef:
-                  name: cms-shop-credentials
-                  key: REDIS_URL
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
