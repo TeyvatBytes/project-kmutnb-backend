@@ -20,7 +20,7 @@ RUN bun run prisma generate
 RUN bun build ./src/index.ts --target bun --outdir ./dist
 
 # Create production image
-FROM oven/bun:1.2-alpine
+FROM oven/bun:1.2-alpine AS production
 
 WORKDIR /app
 
