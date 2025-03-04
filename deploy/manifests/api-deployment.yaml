@@ -26,7 +26,7 @@ spec:
                   key: DATABASE_URL
       containers:
         - name: cms-shop-api
-          image: project-kmutnb-backend
+          image: cms-shop-api
           ports:
             - containerPort: 3000
           env:
