@@ -27,8 +27,9 @@ WORKDIR /app
 # Copy built application and necessary files
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/shared/prisma ./prisma
-COPY --from=builder /app/packages/backend-service/package.json ./
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/bun.lock ./
 
 
 # Set environment variables
