@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id            Int             @id @default(autoincrement())
+  password      String
+  username      String          @unique
+  isDeveloper   Boolean         @default(false)
+  balance       Float           @default(0)
+  shop          shop[]
+  order         order[]
+  product_stock product_stock[]
+  user_topup    user_topup[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TOPUP_TYPE {
+  TRUEAUNGPAO
+}
+
+model user_topup {
+  id Int @id @default(autoincrement())
+
+  amount Float
+  type   TOPUP_TYPE
+
+  user_id Int
+  user    user @relation(fields: [user_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model shop {
+  id          Int    @id @default(autoincrement())
+  owner_id    Int    @default(autoincrement())
+  owner       user   @relation(fields: [owner_id], references: [id])
+  balance     Float  @default(0)
+  description String @default("")
+  logo        String @default("")
+  slug        String @default("")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  product   product[]
+  order     order[]
+}
+
+model product {
+  id          Int     @id @default(autoincrement())
+  shop_id     Int
+  shop        shop    @relation(fields: [shop_id], references: [id])
+  name        String
+  description String  @default("")
+  image_url   String?
+  price       Float   @default(0)
+  data        String
+
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  order         order[]
+  product_stock product_stock[]
+}
+
+model product_stock {
+  id Int @id @default(autoincrement())
+
+  productId Int
+  product   product  @relation(fields: [productId], references: [id])
+  data      String
+  buyer     user?    @relation(fields: [buyerId], references: [id])
+  buyerId   Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ORDER_STATUS {
+  SUCCESS
+  CANCELLED
+  CANCELLED_REFUND
+}
+
+model order {
+  id         Int          @id @default(autoincrement())
+  user_id    Int          @default(autoincrement())
+  user       user         @relation(fields: [user_id], references: [id])
+  shop_id    Int
+  shop       shop         @relation(fields: [shop_id], references: [id])
+  product_id Int
+  product    product      @relation(fields: [product_id], references: [id])
+  quantity   Int          @default(1)
+  data       String
+  status     ORDER_STATUS
+  price      Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

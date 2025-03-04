@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  db-init:
+    build: .
+    command: ["bun", "prisma", "db", "push", "--force-reset"]
+    env_file: .env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgrespassword@postgres:5432/ecommerce?schema=public
+    volumes:
+      - ./prisma:/app/prisma
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - ecommerce-network
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgrespassword@postgres:5432/ecommerce?schema=public
+      - JWT_SECRET=your-super-secret-jwt-key
+      - PORT=3000
+    volumes:
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - ecommerce-network
+
+  postgres:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgrespassword
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=ecommerce
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ecommerce-network
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  ecommerce-network:
+    driver: bridge
