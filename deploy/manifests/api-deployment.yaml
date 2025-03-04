@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cms-shop-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cms-shop-api
+  template:
+    metadata:
+      labels:
+        app: cms-shop-api
+    spec:
+      initContainers:
+        - name: db-migration
+          image: cms-shop-api
+          command: ["bun", "prisma", "db", "push"]
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cms-shop-credentials
+                  key: DATABASE_URL
+      containers:
+        - name: cms-shop-api
+          image: project-kmutnb-backend
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: IPFS_CLUSTER_URL
+              value: http://ipfs-cluster-api.ipfs-system:9094
+            - name: IPFS_GATEWAY_URL
+              value: https://cdn.teyvatbytes.com
+            - name: RABBITMQ_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cms-shop-credentials
+                  key: RABBITMQ_URL
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cms-shop-credentials
+                  key: REDIS_URL
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: cms-shop-credentials
+                  key: DATABASE_URL
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              memory: "1024Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 30
