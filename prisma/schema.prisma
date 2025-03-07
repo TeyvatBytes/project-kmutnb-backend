@@ -52,12 +52,13 @@ model shop {
   balance     Float  @default(0)
   description String @default("")
   logo        String @default("")
+  name        String @default("")
   slug        String @default("")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  product   product[]
-  order     order[]
+  products  product[]
+  orders    order[]
 }
 
 model product {
@@ -66,9 +67,9 @@ model product {
   shop        shop    @relation(fields: [shop_id], references: [id])
   name        String
   description String  @default("")
-  image_url   String?
+  image       String?
   price       Float   @default(0)
-  data        String
+  category    String?
 
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt

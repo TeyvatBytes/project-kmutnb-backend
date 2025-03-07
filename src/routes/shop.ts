@@ -34,7 +34,16 @@ export const ShopRoutes = new Elysia({
               username: true,
             },
           },
-          product: true,
+          products: {
+            include: {
+              _count: {
+                select: {
+                  order: true,
+                  product_stock: true,
+                },
+              },
+            },
+          },
         },
       });
 
@@ -51,12 +60,10 @@ export const ShopRoutes = new Elysia({
     },
   )
   .use(AuthPlugin)
-  .use(shopPlugin)
-  .use(shopOwnershipGuardPlugin)
   .post(
     "/",
     async ({ body, set, auth }) => {
-      const { description, logo, slug } = body;
+      const { description, logo, slug, name } = body;
 
       // Check if slug is already taken
       const existingShop = await prisma.shop.findFirst({
@@ -74,6 +81,7 @@ export const ShopRoutes = new Elysia({
           description,
           logo,
           slug,
+          name,
         },
       });
 
@@ -84,9 +92,13 @@ export const ShopRoutes = new Elysia({
         description: t.String(),
         logo: t.String(),
         slug: t.String(),
+        name: t.String(),
       }),
     },
   )
+
+  .use(shopPlugin)
+  .use(shopOwnershipGuardPlugin)
   .get(
     "/:shop_id",
     async ({ params }) => {

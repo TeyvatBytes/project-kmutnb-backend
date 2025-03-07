@@ -2,7 +2,10 @@ version: "3.8"
 
 services:
   db-init:
-    build: .
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
     command: ["bun", "prisma", "db", "push", "--force-reset"]
     env_file: .env
     environment:
@@ -15,9 +18,13 @@ services:
     networks:
       - ecommerce-network
   app:
-    build: .
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
+      - "5555:5555"
     depends_on:
       db-init:
         condition: service_completed_successfully

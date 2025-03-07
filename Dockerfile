@@ -18,6 +18,9 @@ RUN bun run prisma generate
 
 # Build the application (if needed)
 RUN bun build ./src/index.ts --target bun --outdir ./dist
+FROM builder AS dev
+CMD bun prisma studio & bun run --watch ./src/index.ts
+
 
 # Create production image
 FROM oven/bun:1.2-alpine AS production

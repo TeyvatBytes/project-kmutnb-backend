@@ -14,16 +14,10 @@ export const ProductRoute = new Elysia({
       const products = await prisma.product.findMany({
         where: { shop_id: params.shop_id },
         include: {
-          shop: {
+          _count: {
             select: {
-              id: true,
-              slug: true,
-              owner: {
-                select: {
-                  id: true,
-                  username: true,
-                },
-              },
+              order: true,
+              product_stock: true,
             },
           },
         },
@@ -192,8 +186,8 @@ export const ProductRoute = new Elysia({
   // Create a product
   .post(
     "",
-    async ({ params, body, shop, set }) => {
-      const { name, description, price } = body;
+    async ({ body, shop }) => {
+      const { name, description, price, image } = body;
 
       const product = await prisma.product.create({
         data: {
@@ -201,6 +195,7 @@ export const ProductRoute = new Elysia({
           name,
           description,
           price,
+          image,
         },
       });
 
@@ -214,6 +209,7 @@ export const ProductRoute = new Elysia({
         name: t.String(),
         description: t.String(),
         price: t.Number(),
+        image: t.String(),
       }),
     },
   )

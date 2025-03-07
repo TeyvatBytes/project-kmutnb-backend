@@ -4,7 +4,7 @@ import { prisma } from "../lib/prisma";
 export const shopPlugin = (app: Elysia) =>
   app.derive(async ({ params }: any) => {
     const shop = await prisma.shop.findUnique({
-      where: { id: params.shop_id },
+      where: { id: +params.shop_id },
     });
 
     if (!shop) {
