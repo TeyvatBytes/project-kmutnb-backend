@@ -7,7 +7,7 @@ export const ShopRoutes = new Elysia({
   prefix: "/api/v1/shops",
   tags: ["Shop"],
 })
-  .use(AuthPlugin)
+
   .get("/", async () => {
     const shops = await prisma.shop.findMany({
       include: {
@@ -50,6 +50,7 @@ export const ShopRoutes = new Elysia({
       }),
     },
   )
+  .use(AuthPlugin)
   .use(shopPlugin)
   .use(shopOwnershipGuardPlugin)
   .post(
