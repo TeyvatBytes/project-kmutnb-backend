@@ -11,13 +11,13 @@ export async function initDemo() {
   });
 
   await client.api.v1.auth.register.post({
-    username: "chelos",
-    password: "1234chan",
+    username: "demo_user",
+    password: "!1234567demo",
   });
 
   const { data: user } = await client.api.v1.auth.login.post({
-    username: "chelos",
-    password: "1234chan",
+    username: "demo_user",
+    password: "!1234567demo",
   });
   token = user?.token;
   console.log(`Token: ${user?.token}`);
