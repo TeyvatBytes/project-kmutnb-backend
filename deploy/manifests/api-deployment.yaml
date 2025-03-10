@@ -15,7 +15,7 @@ spec:
       initContainers:
         - name: db-migration
           image: cms-shop-api
-          command: ["bun", "prisma", "db", "push"]
+          command: ["bun", "prisma", "db", "push", "--accept-data-loss"]
           env:
             - name: NODE_ENV
               value: "production"
