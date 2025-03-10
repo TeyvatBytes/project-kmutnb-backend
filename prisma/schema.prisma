@@ -53,7 +53,11 @@ model shop {
   description String @default("")
   logo        String @default("")
   name        String @default("")
-  slug        String @default("")
+  slug        String @unique
+  review      Float  @default(5.0)
+
+  contact String @default("")
+  policy  String @default("")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -90,6 +94,7 @@ model product_stock {
 }
 
 enum ORDER_STATUS {
+  PENDING
   SUCCESS
   CANCELLED
   CANCELLED_REFUND

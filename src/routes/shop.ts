@@ -17,6 +17,12 @@ export const ShopRoutes = new Elysia({
             username: true,
           },
         },
+        _count: {
+          select: {
+            orders: true,
+            products: true,
+          },
+        },
       },
     });
 
@@ -25,13 +31,18 @@ export const ShopRoutes = new Elysia({
   .get(
     "/by-slug",
     async ({ query }) => {
-      const shop = await prisma.shop.findFirst({
+      const shop = await prisma.shop.findUnique({
         where: { slug: query.slug },
         include: {
           owner: {
             select: {
               id: true,
               username: true,
+            },
+          },
+          _count: {
+            select: {
+              orders: true,
             },
           },
           products: {
@@ -51,7 +62,18 @@ export const ShopRoutes = new Elysia({
         return { error: "Shop not found" };
       }
 
-      return shop;
+      let categorys = await prisma.product.groupBy({
+        where: {
+          shop_id: shop.id,
+        },
+        by: ["category"],
+      });
+      return {
+        ...shop,
+        categorys: categorys
+          .map((category) => category.category)
+          .filter((_) => _),
+      };
     },
     {
       query: t.Object({

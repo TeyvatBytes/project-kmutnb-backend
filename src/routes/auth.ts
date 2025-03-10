@@ -4,11 +4,11 @@ import bcrypt from "bcryptjs";
 import { AuthPlugin } from "../middleware/auth";
 import { TOPUP_TYPE } from "@prisma/client";
 export const AuthRoutes = new Elysia({
-  prefix: "/api/v1/auth",
+  prefix: "/api/v1",
   tags: ["Auth"],
 })
   .post(
-    "/register",
+    "/auth/register",
     async ({ body, jwt, set }) => {
       const { username, password } = body;
 
@@ -52,7 +52,7 @@ export const AuthRoutes = new Elysia({
     },
   )
   .post(
-    "/login",
+    "/auth/login",
     async ({ body, jwt, set }) => {
       const { username, password } = body;
 
@@ -93,10 +93,10 @@ export const AuthRoutes = new Elysia({
     },
   )
   .use(AuthPlugin)
-  .get("/@me", async ({ auth, set }) => {
+  .get("/users/@me", async ({ auth, set }) => {
     return auth;
   })
-  .get("/@me/orders", async ({ auth, set }) => {
+  .get("/users/@me/orders", async ({ auth, set }) => {
     const orders = await prisma.order.findMany({
       where: {
         user_id: auth.id,
@@ -107,7 +107,7 @@ export const AuthRoutes = new Elysia({
     });
     return orders;
   })
-  .get("/@me/topups", async ({ auth, set }) => {
+  .get("/users/@me/topups", async ({ auth, set }) => {
     const topups = await prisma.user_topup.findMany({
       where: {
         user_id: auth.id,
@@ -119,7 +119,22 @@ export const AuthRoutes = new Elysia({
     return topups;
   })
   .post(
-    "/@me/topups/aungpao",
+    "/users/@me/topups/truewallet",
+    async ({ auth, body }) => {
+      const qr_blob = await fetch(
+        `https://promptparse-api.vercel.app/api/truewallet/0971051957/${body.amount}?message=${encodeURIComponent(`ชำระเงินให้ sellvat ${body.amount} บาท`)}`,
+      ).then((res) => res.blob());
+
+      return qr_blob;
+    },
+    {
+      body: t.Object({
+        amount: t.Numeric({ minimum: 1, maximum: 1000 }),
+      }),
+    },
+  )
+  .post(
+    "/users/@me/topups/aungpao",
     async ({ auth, body }) => {
       const amount = 10;
       return await prisma.$transaction(async (tx) => {

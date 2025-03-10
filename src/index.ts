@@ -64,6 +64,6 @@ app.listen(process.env.PORT || 3000, () => {
   console.log(
     `🦊 Elysia server is running at ${app.server?.hostname}:${app.server?.port}`,
   );
-  if (process.env.NODE_ENV !== "production") initDev();
+  if (process.env.NODE_ENV !== "production") initDev().catch(console.error);
 });
 export type App = typeof app;

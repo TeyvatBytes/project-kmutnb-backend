@@ -187,7 +187,7 @@ export const ProductRoute = new Elysia({
   .post(
     "",
     async ({ body, shop }) => {
-      const { name, description, price, image } = body;
+      const { name, description, price, image, category } = body;
 
       const product = await prisma.product.create({
         data: {
@@ -195,6 +195,7 @@ export const ProductRoute = new Elysia({
           name,
           description,
           price,
+          category,
           image,
         },
       });
@@ -209,6 +210,7 @@ export const ProductRoute = new Elysia({
         name: t.String(),
         description: t.String(),
         price: t.Number(),
+        category: t.String(),
         image: t.String(),
       }),
     },
