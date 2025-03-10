@@ -6,7 +6,7 @@ metadata:
     "cert-manager.io/cluster-issuer": "cf-teyvatsbyte-issuer-prod"
 spec:
   rules:
-    - host: cms-shop-api.teyvatbytes.com # Placeholder, will be patched in overlays
+    - host: shop-api.sellvat.com # Placeholder, will be patched in overlays
       http:
         paths:
           - path: /
@@ -18,5 +18,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - cms-shop-api.teyvatbytes.com
-      secretName: tls-cms-shop-api-secret
+        - shop-api.sellvat.com
+      secretName: tls-shop-api-sellvat-secret
