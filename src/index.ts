@@ -7,7 +7,7 @@ import { OrderRoute } from "./routes/order";
 import { ProductRoute } from "./routes/product";
 import { ShopRoutes } from "./routes/shop";
 import cors from "@elysiajs/cors";
-import { initDev } from "./dev";
+import { initDemo, initDev } from "./dev";
 
 export const app = new Elysia()
   .use(cors())
@@ -65,5 +65,6 @@ app.listen(process.env.PORT || 3000, () => {
     `🦊 Elysia server is running at ${app.server?.hostname}:${app.server?.port}`,
   );
   if (process.env.NODE_ENV !== "production") initDev().catch(console.error);
+  initDemo().catch(console.error);
 });
 export type App = typeof app;
