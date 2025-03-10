@@ -26,8 +26,8 @@ export async function initDemo() {
     name: "EpicGameLoot",
     description:
       "ร้านขายไอเทมเกมคุณภาพ การันตีของแท้ สินค้าหลากหลาย บริการดีตลอด 8 ปี",
-    logo: "https://github.com/ParaDoxy8k.png",
-    slug: "epicgameloot",
+    logo: "https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/video-games/epic-games-hg3aynrgcuetqn170db1g9.png/epic-games-y5xqpgrdx4l1nft47f5gz7.png?_a=DAJFJtWIZAAC",
+    slug: "demo",
   });
 
   const { data: shop } = await client.api.v1.shops["by-slug"].get({

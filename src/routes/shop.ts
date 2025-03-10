@@ -126,6 +126,20 @@ export const ShopRoutes = new Elysia({
     async ({ params }) => {
       const shop = await prisma.shop.findUnique({
         where: { id: params.shop_id },
+        include: {
+          owner: {
+            select: {
+              id: true,
+              username: true,
+            },
+          },
+          _count: {
+            select: {
+              orders: true,
+              products: true,
+            },
+          },
+        },
       });
 
       if (!shop) {

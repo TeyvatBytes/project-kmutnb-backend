@@ -8,6 +8,7 @@ import { ProductRoute } from "./routes/product";
 import { ShopRoutes } from "./routes/shop";
 import cors from "@elysiajs/cors";
 import { initDemo, initDev } from "./dev";
+import { ShopOrderRoute } from "./routes/shop_order";
 
 export const app = new Elysia()
   .use(cors())
@@ -22,6 +23,7 @@ export const app = new Elysia()
   .use(OrderRoute)
   .use(ProductRoute)
   .use(ShopRoutes)
+  .use(ShopOrderRoute)
 
   .use(
     swagger({

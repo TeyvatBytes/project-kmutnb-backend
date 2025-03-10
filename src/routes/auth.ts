@@ -96,6 +96,29 @@ export const AuthRoutes = new Elysia({
   .get("/users/@me", async ({ auth, set }) => {
     return auth;
   })
+
+  .get("/users/@me/shops", async ({ auth, set }) => {
+    const shops = await prisma.shop.findMany({
+      where: {
+        owner_id: auth.id,
+      },
+      include: {
+        owner: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        _count: {
+          select: {
+            orders: true,
+            products: true,
+          },
+        },
+      },
+    });
+    return shops;
+  })
   .get("/users/@me/orders", async ({ auth, set }) => {
     const orders = await prisma.order.findMany({
       where: {
