@@ -258,6 +258,43 @@ export const ProductRoute = new Elysia({
     },
   )
 
+  .delete(
+    "/:product_id",
+    async ({ params, body, set }) => {
+      const product = await prisma.product.findFirst({
+        where: {
+          id: params.product_id,
+          shop_id: params.shop_id,
+        },
+      });
+
+      if (!product) {
+        set.status = 404;
+        return { error: "Product not found" };
+      }
+
+      const deleted_stocks = await prisma.product_stock.deleteMany({
+        where: {
+          productId: params.product_id,
+        },
+      });
+      const deleted = await prisma.product.delete({
+        where: {
+          id: params.product_id,
+          shop_id: params.shop_id,
+        },
+      });
+
+      return deleted;
+    },
+    {
+      params: t.Object({
+        shop_id: t.Numeric(),
+        product_id: t.Numeric(),
+      }),
+    },
+  )
+
   // Add stock to a product
   .post(
     "/:product_id/stock",
@@ -343,6 +380,41 @@ export const ProductRoute = new Elysia({
       params: t.Object({
         shop_id: t.Numeric(),
         product_id: t.Numeric(),
+      }),
+    },
+  )
+  .post(
+    "/:product_id/stock/bulk_delete",
+    async ({ params, body, set }) => {
+      // Check if product exists and belongs to the shop
+      const product = await prisma.product.findFirst({
+        where: {
+          id: params.product_id,
+          shop_id: params.shop_id,
+        },
+      });
+
+      if (!product) {
+        set.status = 404;
+        return { error: "Product not found" };
+      }
+
+      // Bulk Delete stock items
+      await prisma.product_stock.deleteMany({
+        where: { id: { in: body.stockIds }, productId: product.id },
+      });
+
+      return {
+        message: "Bulk Stock deleted successfully",
+      };
+    },
+    {
+      params: t.Object({
+        shop_id: t.Numeric(),
+        product_id: t.Numeric(),
+      }),
+      body: t.Object({
+        stockIds: t.Array(t.Numeric()),
       }),
     },
   );

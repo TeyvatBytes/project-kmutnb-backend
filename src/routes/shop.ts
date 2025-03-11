@@ -157,9 +157,9 @@ export const ShopRoutes = new Elysia({
   .put(
     "/:shop_id",
     async ({ params, body, set, shop }) => {
-      const shopId = params.id;
+      const shopId = params.shop_id;
 
-      const { description, logo, slug } = body;
+      const { description, logo, slug, name } = body;
 
       // Check if slug is already taken by another shop
       if (slug !== shop.slug) {
@@ -189,12 +189,13 @@ export const ShopRoutes = new Elysia({
     },
     {
       params: t.Object({
-        id: t.Numeric(),
+        shop_id: t.Numeric(),
       }),
       body: t.Object({
         description: t.String(),
         logo: t.String(),
         slug: t.String(),
+        name: t.String(),
       }),
     },
   );
