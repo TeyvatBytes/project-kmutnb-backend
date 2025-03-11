@@ -232,13 +232,14 @@ export const ProductRoute = new Elysia({
         return { error: "Product not found" };
       }
 
-      const { name, description, price } = body;
+      const { name, description, price, image } = body;
 
       const updatedProduct = await prisma.product.update({
         where: { id: params.product_id },
         data: {
           name,
           description,
+          image,
           price,
         },
       });
@@ -253,6 +254,7 @@ export const ProductRoute = new Elysia({
       body: t.Object({
         name: t.String(),
         description: t.String(),
+        image: t.String(),
         price: t.Number(),
       }),
     },
