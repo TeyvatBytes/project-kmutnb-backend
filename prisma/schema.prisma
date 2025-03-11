@@ -24,8 +24,10 @@ model user {
   product_stock product_stock[]
   user_topup    user_topup[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+  shop_withdrawal_manage  shop_withdrawal[] @relation("manage_user")
+  shop_withdrawal_request shop_withdrawal[] @relation("request_user")
 }
 
 enum TOPUP_TYPE {
@@ -59,10 +61,34 @@ model shop {
   contact String @default("")
   policy  String @default("")
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  products  product[]
-  orders    order[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  products        product[]
+  orders          order[]
+  shop_withdrawal shop_withdrawal[]
+}
+
+enum WITHDRAWAL_STATUS {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model shop_withdrawal {
+  id Int @id @default(autoincrement())
+
+  amount Float
+  status WITHDRAWAL_STATUS
+
+  shop_id         Int
+  shop            shop @relation(fields: [shop_id], references: [id])
+  request_user_id Int
+  request_user    user @relation(name: "request_user", fields: [request_user_id], references: [id])
+  manage_user_id  Int
+  manage_user     user @relation(name: "manage_user", fields: [manage_user_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model product {

@@ -102,7 +102,7 @@ export const ProductRoute = new Elysia({
       }
 
       // Check if user has enough balance
-      const totalPrice = product.price * quantity;
+      const totalPrice = product.price * quantity * 1.03;
 
       if (auth.balance < totalPrice) {
         set.status = 400;
