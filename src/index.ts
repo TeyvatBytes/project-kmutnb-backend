@@ -12,7 +12,11 @@ import { ShopOrderRoute } from "./routes/shop/shop_order";
 import { WithdrawalRoute } from "./routes/withdrawal";
 
 export const app = new Elysia()
-  .use(cors())
+  .use(
+    cors({
+      maxAge: 600,
+    }),
+  )
   .use(
     jwt({
       name: "jwt",
