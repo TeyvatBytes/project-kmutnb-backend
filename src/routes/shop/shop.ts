@@ -240,7 +240,6 @@ export const ShopRoutes = new Elysia({
         shop_id: t.Numeric(),
       }),
       body: t.Object({
-        payment_method_id: t.String(),
         detail: t.String(),
         amount: t.Number(),
       }),
