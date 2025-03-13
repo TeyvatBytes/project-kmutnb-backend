@@ -131,12 +131,6 @@ export const AuthRoutes = new Elysia({
             username: true,
           },
         },
-        product: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
         shop: {
           select: {
             id: true,
