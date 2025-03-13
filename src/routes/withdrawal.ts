@@ -6,7 +6,7 @@ import { WITHDRAWAL_STATUS } from "@prisma/client";
 
 export const WithdrawalRoute = new Elysia({
   prefix: "/api/v1/withdrawals",
-  tags: ["Order"],
+  tags: ["Withdrawals"],
 })
   .use(AuthPlugin)
   .use(developerGuardPlugin)

@@ -5,7 +5,7 @@ import { shopOwnershipGuardPlugin, shopPlugin } from "../../middleware/shop";
 
 export const ShopOrderRoute = new Elysia({
   prefix: "/api/v1/shops/:shop_id/orders",
-  tags: ["Order"],
+  tags: ["Shop"],
 })
   .use(AuthPlugin)
   .use(shopPlugin)
