@@ -124,10 +124,31 @@ export const AuthRoutes = new Elysia({
       where: {
         user_id: auth.id,
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        product: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        shop: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
     });
+    console.log(orders);
     return orders;
   })
   .get("/users/@me/topups", async ({ auth, set }) => {
