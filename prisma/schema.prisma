@@ -133,6 +133,7 @@ model order {
   shop          shop         @relation(fields: [shop_id], references: [id])
   product_name  String       @default("")
   product_price Float        @default(0)
+  description   String       @default("")
   quantity      Int          @default(1)
   data          String
   status        ORDER_STATUS

@@ -19,6 +19,12 @@ export async function initDemo() {
     username: "demo_user",
     password: "!1234567demo",
   });
+
+  // await prisma.user.update({
+  //   where: { id: user.id },
+  //   data: { balance: 10000 },
+  // });
+
   token = user?.token;
   console.log(`Token: ${user?.token}`);
 
