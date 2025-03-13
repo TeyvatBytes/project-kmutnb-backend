@@ -40,8 +40,10 @@ export const app = new Elysia()
         },
         tags: [
           { name: "Auth", description: "Auth" },
-          { name: "Shops", description: "Shops management" },
-          { name: "Orders", description: "Orders management" },
+          { name: "Product", description: "Products management" },
+          { name: "Shop", description: "Shops management" },
+          { name: "Order", description: "Orders management" },
+          { name: "Withdrawal", description: "Withdrawal management" },
         ],
 
         components: {
