@@ -182,6 +182,7 @@ export const ShopRoutes = new Elysia({
           description,
           logo,
           slug,
+          name,
         },
       });
 
