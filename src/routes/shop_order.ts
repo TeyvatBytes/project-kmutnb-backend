@@ -9,7 +9,9 @@ export const ShopOrderRoute = new Elysia({
 })
   .use(AuthPlugin)
   .use(shopPlugin)
-  // Get all orders for a shop (for anyone)
+  // Shop owner can only get more detailed info
+  .use(shopOwnershipGuardPlugin)
+
   .get(
     "",
     async ({ params, query }) => {
@@ -43,8 +45,6 @@ export const ShopOrderRoute = new Elysia({
       }),
     },
   )
-  // Shop owner can only get more detailed info
-  .use(shopOwnershipGuardPlugin)
   // Get a specific order
   .get(
     "/:order_id",
