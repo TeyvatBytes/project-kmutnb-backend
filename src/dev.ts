@@ -1,7 +1,7 @@
 import { treaty } from "@elysiajs/eden";
 import { App } from ".";
 export async function initDemo() {
-  let token = null;
+  let token: string | null = null;
   const client = treaty<App>("http://localhost:3000", {
     headers() {
       return {
@@ -181,7 +181,7 @@ export async function initDemo() {
   }
 }
 export async function initDev() {
-  let token = null;
+  let token: string | null = null;
   const client = treaty<App>("http://localhost:3000", {
     headers() {
       return {

@@ -5,10 +5,11 @@ import jwt from "@elysiajs/jwt";
 import { AuthRoutes } from "./routes/auth";
 import { OrderRoute } from "./routes/order";
 import { ProductRoute } from "./routes/product";
-import { ShopRoutes } from "./routes/shop";
+import { ShopRoutes } from "./routes/shop/shop";
 import cors from "@elysiajs/cors";
 import { initDemo, initDev } from "./dev";
-import { ShopOrderRoute } from "./routes/shop_order";
+import { ShopOrderRoute } from "./routes/shop/shop_order";
+import { WithdrawalRoute } from "./routes/withdrawal";
 
 export const app = new Elysia()
   .use(cors())
