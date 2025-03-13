@@ -197,7 +197,7 @@ export async function initDev() {
 
   await client.api.v1.shops.post({
     name: "ParadoxyShop888",
-    description: "ร้านเราขาย sextoy คุณภาพสูงมาตลอด 8 ปี",
+    description: "ร้านเราขายเกมคุณภาพสูงมาตลอด 8 ปี",
     logo: "https://github.com/ParaDoxy8k.png",
     slug: "beer",
   });
