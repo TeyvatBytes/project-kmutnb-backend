@@ -10,13 +10,26 @@ export const WithdrawalRoute = new Elysia({
 })
   .use(AuthPlugin)
   .use(developerGuardPlugin)
-  .get("/", async ({ auth }) => {
-    return prisma.shop_withdrawal.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-  })
+  .get(
+    "/",
+    async ({ auth, query }) => {
+      return prisma.shop_withdrawal.findMany({
+        where: {
+          status: query.status,
+        },
+        take: query.limit,
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    },
+    {
+      query: t.Object({
+        status: t.Optional(t.Enum(WITHDRAWAL_STATUS)),
+        limit: t.Numeric({ default: 100 }),
+      }),
+    },
+  )
 
   .get(
     "/:withdrawal_id",
