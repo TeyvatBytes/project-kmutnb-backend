@@ -11,7 +11,6 @@ export const OrderRoute = new Elysia({
     const orders = await prisma.order.findMany({
       where: { user_id: auth.id },
       include: {
-        product: true,
         shop: true,
       },
       orderBy: { createdAt: "desc" },
