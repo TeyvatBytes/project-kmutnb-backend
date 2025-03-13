@@ -101,9 +101,10 @@ export const ProductRoute = new Elysia({
       }
 
       // Check if user has enough balance
-      const totalPrice = product.price * quantity * 1.03;
+      const totalPriceBeforeFee = product.price * quantity;
+      const totalPriceAfterFee = totalPriceBeforeFee * 1.03;
 
-      if (auth.balance < totalPrice) {
+      if (auth.balance < totalPriceAfterFee) {
         set.status = 400;
         return { error: "Insufficient balance" };
       }
@@ -131,7 +132,7 @@ export const ProductRoute = new Elysia({
             quantity,
             data: stockData,
             status: "SUCCESS",
-            price: totalPrice,
+            price: totalPriceAfterFee,
           },
         });
 
@@ -149,7 +150,7 @@ export const ProductRoute = new Elysia({
           where: { id: auth.id },
           data: {
             balance: {
-              decrement: totalPrice,
+              decrement: totalPriceAfterFee,
             },
           },
         });
@@ -163,7 +164,7 @@ export const ProductRoute = new Elysia({
           where: { id: shop.id },
           data: {
             balance: {
-              increment: totalPrice,
+              increment: totalPriceBeforeFee,
             },
           },
         });
@@ -172,7 +173,7 @@ export const ProductRoute = new Elysia({
           orderId: order.id,
           product: product.name,
           quantity,
-          price: totalPrice,
+          price: totalPriceAfterFee,
           data: stockData,
         };
       });
