@@ -1,7 +1,7 @@
 import Elysia, { t } from "elysia";
-import { AuthPlugin } from "../middleware/auth";
-import { prisma } from "../lib/prisma";
-import { shopOwnershipGuardPlugin, shopPlugin } from "../middleware/shop";
+import { AuthPlugin } from "../../middleware/auth";
+import { prisma } from "../../lib/prisma";
+import { shopOwnershipGuardPlugin, shopPlugin } from "../../middleware/shop";
 
 export const ShopOrderRoute = new Elysia({
   prefix: "/api/v1/shops/:shop_id/orders",
@@ -25,7 +25,6 @@ export const ShopOrderRoute = new Elysia({
               username: true,
             },
           },
-          product: true,
           shop: true,
         },
         orderBy: {
@@ -61,7 +60,6 @@ export const ShopOrderRoute = new Elysia({
               username: true,
             },
           },
-          product: true,
           shop: true,
         },
       });

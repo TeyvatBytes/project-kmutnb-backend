@@ -24,6 +24,7 @@ export const app = new Elysia()
   .use(ProductRoute)
   .use(ShopRoutes)
   .use(ShopOrderRoute)
+  .use(WithdrawalRoute)
 
   .use(
     swagger({

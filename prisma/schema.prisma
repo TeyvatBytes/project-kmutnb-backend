@@ -81,11 +81,11 @@ model shop_withdrawal {
   status WITHDRAWAL_STATUS
 
   shop_id         Int
-  shop            shop @relation(fields: [shop_id], references: [id])
+  shop            shop  @relation(fields: [shop_id], references: [id])
   request_user_id Int
-  request_user    user @relation(name: "request_user", fields: [request_user_id], references: [id])
-  manage_user_id  Int
-  manage_user     user @relation(name: "manage_user", fields: [manage_user_id], references: [id])
+  request_user    user  @relation(name: "request_user", fields: [request_user_id], references: [id])
+  manage_user_id  Int?
+  manage_user     user? @relation(name: "manage_user", fields: [manage_user_id], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -26,3 +26,13 @@ export const AuthPlugin = (app: Elysia) =>
 
     return { auth: user };
   });
+
+export const developerGuardPlugin = (app: Elysia) =>
+  app.derive(async ({ auth, set }: any) => {
+    if (!auth || !auth.isDeveloper) {
+      set.status = 401;
+      throw new Error("Unauthorized");
+    }
+
+    return { isDeveloper: true };
+  });

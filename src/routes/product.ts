@@ -145,7 +145,7 @@ export const ProductRoute = new Elysia({
         });
 
         // Update user balance
-        await tx.user.update({
+        const user = await tx.user.update({
           where: { id: auth.id },
           data: {
             balance: {
@@ -153,6 +153,10 @@ export const ProductRoute = new Elysia({
             },
           },
         });
+
+        if (user.balance < 0) {
+          throw new Error("Insufficient balance");
+        }
 
         // Update shop balance
         await tx.shop.update({

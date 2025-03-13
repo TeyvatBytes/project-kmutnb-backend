@@ -1,13 +1,13 @@
 import Elysia, { t } from "elysia";
-import { prisma } from "../lib/prisma";
-import { AuthPlugin } from "../middleware/auth";
-import { shopOwnershipGuardPlugin, shopPlugin } from "../middleware/shop";
+import { prisma } from "../../lib/prisma";
+import { AuthPlugin } from "../../middleware/auth";
+import { shopOwnershipGuardPlugin, shopPlugin } from "../../middleware/shop";
+import { WITHDRAWAL_STATUS } from "@prisma/client";
 
 export const ShopRoutes = new Elysia({
   prefix: "/api/v1/shops",
   tags: ["Shop"],
 })
-
   .get("/", async () => {
     const shops = await prisma.shop.findMany({
       include: {
@@ -120,6 +120,7 @@ export const ShopRoutes = new Elysia({
 
   .use(shopPlugin)
   .use(shopOwnershipGuardPlugin)
+
   .get(
     "/:shop_id",
     async ({ params }) => {
@@ -153,6 +154,7 @@ export const ShopRoutes = new Elysia({
       }),
     },
   )
+
   .put(
     "/:shop_id",
     async ({ params, body, set, shop }) => {
@@ -196,6 +198,49 @@ export const ShopRoutes = new Elysia({
         logo: t.String(),
         slug: t.String(),
         name: t.String(),
+      }),
+    },
+  )
+  .post(
+    "/:shop_id/withdrawal",
+    async ({ params, auth, shop, body }) => {
+      const { shop_id } = params;
+
+      const withdrawl_amount = body.amount;
+      if (shop.balance < withdrawl_amount) {
+        throw new Error("Insufficient Shop balance");
+      }
+      return await prisma.$transaction(async (tx) => {
+        const shop_withdrawal = await tx.shop_withdrawal.create({
+          data: {
+            shop_id: shop_id,
+            request_user_id: auth.id,
+            amount: body.amount,
+            status: WITHDRAWAL_STATUS["PENDING"],
+          },
+        });
+
+        const shop = await tx.shop.update({
+          where: { id: shop_id },
+          data: {
+            balance: { decrement: withdrawl_amount },
+          },
+        });
+
+        if (shop.balance < 0) {
+          throw new Error("Insufficient Shop balance");
+        }
+
+        return shop_withdrawal;
+      });
+    },
+    {
+      params: t.Object({
+        shop_id: t.Numeric(),
+      }),
+      body: t.Object({
+        payment_method_id: t.String(),
+        amount: t.Number(),
       }),
     },
   );
