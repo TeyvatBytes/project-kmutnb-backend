@@ -103,7 +103,6 @@ model product {
 
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  order         order[]
   product_stock product_stock[]
 }
 
@@ -132,8 +131,8 @@ model order {
   user          user         @relation(fields: [user_id], references: [id])
   shop_id       Int
   shop          shop         @relation(fields: [shop_id], references: [id])
-  product_name  String
-  product_price Float
+  product_name  String       @default("")
+  product_price Float        @default(0)
   quantity      Int          @default(1)
   data          String
   status        ORDER_STATUS
@@ -141,6 +140,4 @@ model order {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  product   product? @relation(fields: [productId], references: [id])
-  productId Int?
 }

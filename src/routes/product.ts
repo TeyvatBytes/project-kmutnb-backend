@@ -126,7 +126,8 @@ export const ProductRoute = new Elysia({
           data: {
             user_id: auth.id,
             shop_id: shop.id,
-            product_id: product.id,
+            product_name: product.name,
+            product_price: product.price,
             quantity,
             data: stockData,
             status: "SUCCESS",
