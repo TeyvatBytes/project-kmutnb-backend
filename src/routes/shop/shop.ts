@@ -202,7 +202,7 @@ export const ShopRoutes = new Elysia({
     },
   )
   .post(
-    "/:shop_id/withdrawal",
+    "/:shop_id/withdrawl",
     async ({ params, auth, shop, body }) => {
       const { shop_id } = params;
 
@@ -216,6 +216,7 @@ export const ShopRoutes = new Elysia({
             shop_id: shop_id,
             request_user_id: auth.id,
             amount: body.amount,
+            detail: body.detail,
             status: WITHDRAWAL_STATUS["PENDING"],
           },
         });
@@ -240,6 +241,7 @@ export const ShopRoutes = new Elysia({
       }),
       body: t.Object({
         payment_method_id: t.String(),
+        detail: t.String(),
         amount: t.Number(),
       }),
     },

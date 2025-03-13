@@ -80,6 +80,8 @@ model shop_withdrawal {
   amount Float
   status WITHDRAWAL_STATUS
 
+  detail String @default("")
+
   shop_id         Int
   shop            shop  @relation(fields: [shop_id], references: [id])
   request_user_id Int
