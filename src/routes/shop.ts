@@ -49,7 +49,7 @@ export const ShopRoutes = new Elysia({
             include: {
               _count: {
                 select: {
-                  order: true,
+                  orders: true,
                   product_stock: true,
                 },
               },
