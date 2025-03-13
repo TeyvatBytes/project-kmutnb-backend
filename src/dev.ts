@@ -186,11 +186,11 @@ export async function initDev() {
 
   await client.api.v1.auth.register.post({
     username: "chelos",
-    password: "1234chan",
+    password: "chelosno1",
   });
   const { data: user } = await client.api.v1.auth.login.post({
     username: "chelos",
-    password: "1234chan",
+    password: "chelosno1",
   });
   token = user?.token;
   console.log(`Token: ${user?.token}`);
