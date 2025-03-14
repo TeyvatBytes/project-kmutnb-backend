@@ -137,7 +137,7 @@ export const ProductRoute = new Elysia({
         });
 
         // Delete used stock
-        await tx.product_stock.deleteMany({
+        const deletedStock = await tx.product_stock.deleteMany({
           where: {
             id: {
               in: stocks.map((stock) => stock.id),
@@ -145,6 +145,9 @@ export const ProductRoute = new Elysia({
           },
         });
 
+        if (deletedStock.count !== quantity) {
+          throw new Error("Retry again");
+        }
         // Update user balance
         const user = await tx.user.update({
           where: { id: auth.id },
