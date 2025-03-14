@@ -10,6 +10,7 @@ import cors from "@elysiajs/cors";
 import { initDemo, initDev } from "./dev";
 import { ShopOrderRoute } from "./routes/shop/shop_order";
 import { WithdrawalRoute } from "./routes/withdrawal";
+import { TrueAungPaoRoute } from "./routes/topups/aungpao";
 
 export const app = new Elysia()
   .use(
@@ -30,6 +31,7 @@ export const app = new Elysia()
   .use(ShopRoutes)
   .use(ShopOrderRoute)
   .use(WithdrawalRoute)
+  .use(TrueAungPaoRoute)
 
   .use(
     swagger({

@@ -18,27 +18,33 @@ model user {
   password      String
   username      String          @unique
   isDeveloper   Boolean         @default(false)
-  balance       Float           @default(0)
+  balance       Decimal         @default(0)
   shop          shop[]
   order         order[]
   product_stock product_stock[]
   user_topup    user_topup[]
 
-  createdAt               DateTime          @default(now())
-  updatedAt               DateTime          @updatedAt
-  shop_withdrawal_manage  shop_withdrawal[] @relation("manage_user")
-  shop_withdrawal_request shop_withdrawal[] @relation("request_user")
+  createdAt               DateTime              @default(now())
+  updatedAt               DateTime              @updatedAt
+  shop_withdrawal_manage  shop_withdrawal[]     @relation("manage_user")
+  shop_withdrawal_request shop_withdrawal[]     @relation("request_user")
+  payment_transaction     payment_transaction[]
 }
 
 enum TOPUP_TYPE {
-  TRUEAUNGPAO
+  AUNGPAO
+  VOUCHER
+  STRIPE
+  PAYPAL
+  BANK_TRANSFER
 }
 
 model user_topup {
   id Int @id @default(autoincrement())
 
-  amount Float
-  type   TOPUP_TYPE
+  amount   Decimal
+  type     TOPUP_TYPE
+  metadata Json? // JSON string for additional metadata
 
   user_id Int
   user    user @relation(fields: [user_id], references: [id])
@@ -47,16 +53,31 @@ model user_topup {
   updatedAt DateTime @updatedAt
 }
 
+// New model for payment transactions
+model payment_transaction {
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  user       user    @relation(fields: [user_id], references: [id])
+  amount     Decimal
+  gateway    String // Payment gateway identifier (e.g. STRIPE, PAYPAL, TRUEWALLET)
+  gateway_id String? // External ID from the payment gateway
+  status     String // PENDING, COMPLETED, FAILED, REFUNDED
+  metadata   Json? // JSON string for additional data
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model shop {
-  id          Int    @id @default(autoincrement())
-  owner_id    Int    @default(autoincrement())
-  owner       user   @relation(fields: [owner_id], references: [id])
-  balance     Float  @default(0)
-  description String @default("")
-  logo        String @default("")
-  name        String @default("")
-  slug        String @unique
-  review      Float  @default(5.0)
+  id          Int     @id @default(autoincrement())
+  owner_id    Int     @default(autoincrement())
+  owner       user    @relation(fields: [owner_id], references: [id])
+  balance     Decimal @default(0)
+  description String  @default("")
+  logo        String  @default("")
+  name        String  @default("")
+  slug        String  @unique
+  review      Float   @default(5.0)
 
   contact String @default("")
   policy  String @default("")
@@ -77,7 +98,7 @@ enum WITHDRAWAL_STATUS {
 model shop_withdrawal {
   id Int @id @default(autoincrement())
 
-  amount Float
+  amount Decimal
   status WITHDRAWAL_STATUS
 
   detail String @default("")
@@ -100,7 +121,7 @@ model product {
   name        String
   description String  @default("")
   image       String?
-  price       Float   @default(0)
+  price       Decimal @default(0)
   category    String?
 
   createdAt     DateTime        @default(now())
@@ -134,12 +155,12 @@ model order {
   shop_id       Int
   shop          shop         @relation(fields: [shop_id], references: [id])
   product_name  String       @default("")
-  product_price Float        @default(0)
+  product_price Decimal      @default(0)
   description   String       @default("")
   quantity      Int          @default(1)
   data          String
   status        ORDER_STATUS
-  price         Float
+  price         Decimal
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

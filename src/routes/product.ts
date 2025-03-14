@@ -87,7 +87,7 @@ export const ProductRoute = new Elysia({
 
       if (!product) {
         set.status = 404;
-        return { error: "Product not found" };
+        return new Error("Product not found");
       }
 
       // Check if enough stock is available
@@ -97,16 +97,16 @@ export const ProductRoute = new Elysia({
 
       if (availableStockCount < quantity) {
         set.status = 400;
-        return { error: "Not enough stock available" };
+        return new Error("Not enough stock available");
       }
 
       // Check if user has enough balance
-      const totalPriceBeforeFee = product.price * quantity;
-      const totalPriceAfterFee = totalPriceBeforeFee * 1.03;
+      const totalPriceBeforeFee = product.price.mul(quantity);
+      const totalPriceAfterFee = totalPriceBeforeFee.mul(1.03);
 
       if (auth.balance < totalPriceAfterFee) {
         set.status = 400;
-        return { error: "Insufficient balance" };
+        return new Error("Insufficient balance");
       }
 
       // Start transaction
@@ -155,7 +155,7 @@ export const ProductRoute = new Elysia({
           },
         });
 
-        if (user.balance < 0) {
+        if (user.balance.lt(0)) {
           throw new Error("Insufficient balance");
         }
 
