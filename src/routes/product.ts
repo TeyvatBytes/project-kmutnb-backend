@@ -215,7 +215,7 @@ export const ProductRoute = new Elysia({
       body: t.Object({
         name: t.String(),
         description: t.String(),
-        price: t.Number(),
+        price: t.Number({ maximum: 1000000, minimum: 0 }),
         category: t.String(),
         image: t.String(),
       }),
@@ -261,7 +261,7 @@ export const ProductRoute = new Elysia({
         name: t.String(),
         description: t.String(),
         image: t.String(),
-        price: t.Number(),
+        price: t.Number({ maximum: 1000000, minimum: 0 }),
       }),
     },
   )
