@@ -16,7 +16,7 @@ datasource db {
 model user {
   id            Int             @id @default(autoincrement())
   password      String
-  username      String          @unique
+  username      String          @unique @db.VarChar(32)
   isDeveloper   Boolean         @default(false)
   balance       Decimal         @default(0)
   shop          shop[]
@@ -73,9 +73,9 @@ model shop {
   owner_id    Int     @default(autoincrement())
   owner       user    @relation(fields: [owner_id], references: [id])
   balance     Decimal @default(0)
-  description String  @default("")
-  logo        String  @default("")
-  name        String  @default("")
+  description String  @default("") @db.VarChar(8192)
+  logo        String  @default("") @db.VarChar(512)
+  name        String  @default("") @db.VarChar(128)
   slug        String  @unique
   review      Float   @default(5.0)
 
@@ -101,7 +101,7 @@ model shop_withdrawal {
   amount Decimal
   status WITHDRAWAL_STATUS
 
-  detail String @default("")
+  detail String @default("") @db.VarChar(2048)
 
   shop_id         Int
   shop            shop  @relation(fields: [shop_id], references: [id])
@@ -118,11 +118,11 @@ model product {
   id          Int     @id @default(autoincrement())
   shop_id     Int
   shop        shop    @relation(fields: [shop_id], references: [id])
-  name        String
-  description String  @default("")
+  name        String  @db.VarChar(128)
+  description String  @default("") @db.VarChar(8192)
   image       String?
   price       Decimal @default(0)
-  category    String?
+  category    String? @db.VarChar(128)
 
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
@@ -134,7 +134,7 @@ model product_stock {
 
   productId Int
   product   product  @relation(fields: [productId], references: [id])
-  data      String
+  data      String   @db.VarChar(2048)
   buyer     user?    @relation(fields: [buyerId], references: [id])
   buyerId   Int?
   createdAt DateTime @default(now())
